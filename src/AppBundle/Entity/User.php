@@ -49,6 +49,15 @@ class User
      */
     private $updatedAt;
 
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $date = new \DateTime('now');
+        $this->setCreatedAt($date);
+        $this->setUpdatedAt($date);
+    }
 
     /**
      * Get id
