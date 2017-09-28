@@ -7,8 +7,11 @@
             <div class="column">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem deleniti dolore eos ex facere impedit inventore iste magni necessitatibus nulla perferendis, sapiente sequi tempora tenetur veritatis vitae voluptate voluptatibus voluptatum?</p>
             </div>
-            <div class="column is-2">
+            <div class="column is-3">
                 <span>Utilisateurs près de moi :</span>
+                {% for user in userNear %}
+                    <div>{{ user[0] }} est à {{ user[1] | round }} km d'ici</div>
+                {% endfor %}
             </div>
         </div>
     </div>
