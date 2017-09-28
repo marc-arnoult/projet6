@@ -33,13 +33,13 @@ class Fixtures implements FixtureInterface, ContainerAwareInterface
     {
         $redis = $this->container->get('snc_redis.default');
         // Création de 20 utilisateurs
-        for ($i = 1; $i < 10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user->setPseudo(sprintf("user:%d", $i));
             $user->setPassword("pass");
 
-            $longitude = 2.333333 + ($i * 0.050);
-            $latitude = 48.866667 + ($i * 0.050);
+            $longitude = 2.333333 + ($i * 0.05);
+            $latitude = 48.866667 + ($i * 0.05);
 
             // Ajout des utilisateurs dans redis avec position GPS et pseudo.
             $redis->geoadd(
@@ -50,6 +50,7 @@ class Fixtures implements FixtureInterface, ContainerAwareInterface
             );
             $manager->persist($user);
         }
+        // Enregistrement des utilisateurs en base de données.
         $manager->flush();
     }
 }
