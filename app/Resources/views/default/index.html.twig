@@ -1,19 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <header>
+        <nav class="navbar" role="navigation" aria-label="main navigation" style="background-color: #0088CC">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <input type="text" class="input" id="recherche" placeholder="Rechercher...">
+                </div>
+            </div>
+        </nav>
+    </header>
     <div class="container">
         <h1 class="has-text-centered title is-1">My application</h1>
         <div class="columns">
             <div class="column">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem deleniti dolore eos ex facere impedit inventore iste magni necessitatibus nulla perferendis, sapiente sequi tempora tenetur veritatis vitae voluptate voluptatibus voluptatum?</p>
             </div>
-            <div class="column is-2">
-                <span>Utilisateurs près de moi :</span>
-            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $('#recherche').autocomplete({
+            source: function (request, response) {
+                // Appel ajax sur mon contrôleur qui s'occupe de la recherche.
+                $.ajax({
+                    // Je lui passe en paramètre la valeur du champ.
+                    url: '/search?title=' + $('#recherche').val(),
+                    dataType: 'json',
+                    success: function (data) {
+                        // Une fois fini je retourne les données.
+                        return response(data)
+                    }
+                })
+            }
+        });
+    </script>
 {% endblock %}

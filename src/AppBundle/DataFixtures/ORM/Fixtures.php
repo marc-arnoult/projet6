@@ -2,6 +2,7 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
+use AppBundle\Entity\Article;
 use AppBundle\Entity\User;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -32,25 +33,28 @@ class Fixtures implements FixtureInterface, ContainerAwareInterface
     public function load(ObjectManager $manager)
     {
         $redis = $this->container->get('snc_redis.default');
-        // Création de 20 utilisateurs
-        for ($i = 0; $i < 10; $i++) {
-            $user = new User();
-            $user->setPseudo(sprintf("user:%d", $i));
-            $user->setPassword("pass");
 
-            $longitude = 2.333333 + ($i * 0.05);
-            $latitude = 48.866667 + ($i * 0.05);
+        // Titres des mes article, important pour notre recherche avec autocomplétion.
+        $titles = [
+            'mon premier article',
+            'mon deuxieme article',
+            'mon troisieme article',
+            'article factice',
+            'article redondant'
+        ];
 
-            // Ajout des utilisateurs dans redis avec position GPS et pseudo.
-            $redis->geoadd(
-                'user_position',
-                $longitude,
-                $latitude,
-                $user->getPseudo()
-            );
-            $manager->persist($user);
+        // Création de 5 articles.
+        for ($i = 0; $i < 5; $i++) {
+            $article = new Article();
+            $article->setContent('Post hoc impie perpetratum quod in aliis quoque iam timebatur, tamquam licentia crudelitati indulta per suspicionum nebulas aestimati quidam noxii damnabantur. quorum pars necati, alii puniti bonorum multatione actique laribus suis extorres nullo sibi relicto praeter querelas et lacrimas, stipe conlaticia victitabant, et civili iustoque imperio ad voluntatem converso cruentam, claudebantur opulentae domus et clarae.');
+            $article->setTitle($titles[$i]);
+            $article->setCreatedAt(new \DateTime('now'));
+
+            // Ajout dans le sorted set 'article' de nos titres, on donne pour chacun de nos titres un score de 0.
+            $redis->zadd('article', [$titles[$i] => 0]);
+            $manager->persist($article);
         }
-        // Enregistrement des utilisateurs en base de données.
+        // Enregistrement des articles en base de données.
         $manager->flush();
     }
 }
