@@ -25,13 +25,18 @@ class HomeController extends Controller
     public function searchAction(Request $request)
     {
         // Récupération de la valeur passé en paramètre.
-        $titre = $request->query->get('title');
+        $titre = ltrim(strtolower($request->query->get('title')));
         $redis = $this->get('snc_redis.default');
         // Ici se place toute notre logique de recherche.
         // [ => recherche inclusif du titre.
-        $result = $redis->zrangebylex('article', "[$titre", "[$titre\xff", ['LIMIT', 0, 10]);
+        $data = $redis->sscan('articles', 0, ['MATCH' => '*' . $titre . '*']);
+        $articles = [];
 
+        foreach ($data[1] as $article) {
+            list($title, $id) = explode(':', $article);
+            $articles[$id] = $title;
+        }
         // On renvoi le résulat en json avec le code HTTP et les headers adaptés.
-        return new JsonResponse($result, 200, ['Content-Type' => 'application/json']);
+        return new JsonResponse($articles, 200, ['Content-Type' => 'application/json']);
     }
 }

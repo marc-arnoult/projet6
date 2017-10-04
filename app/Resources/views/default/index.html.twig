@@ -39,10 +39,19 @@
                     dataType: 'json',
                     success: function (data) {
                         // Une fois fini je retourne les données.
-                        return response(data)
+                        response($.map(data, function (value, key) {
+                            return {
+                                label: value,
+                                // je veille à récupérer l'id pour faire un appel sur l'article donner.
+                                id: key
+                            }
+                        }));
                     }
                 })
+            },
+            select: function (e, ui) {
+                console.log(ui.item.id)
             }
-        });
+        })
     </script>
 {% endblock %}
