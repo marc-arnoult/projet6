@@ -54,12 +54,6 @@ class Fixtures implements FixtureInterface, ContainerAwareInterface
             // Enregistrement des articles en base de données.
             $manager->persist($article);
             $manager->flush();
-
-            /*
-            * J'utilise ici les "sets" pour enregistrer mes articles dans la clé "articles"
-            * Noté la concaténation avec l'id pour ensuite le récupérer plus tard pour la récupération d'un article.
-            */
-            $redis->sadd('articles', $titles[$i] . ':' . $article->getId());
         }
     }
 }

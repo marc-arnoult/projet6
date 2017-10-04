@@ -22,6 +22,11 @@ services:
         # but if a service is unused, it's removed anyway
         exclude: '../../src/AppBundle/{Entity,Repository,Tests}'
 
+    search.indexer.listener:
+        class: AppBundle\EventListener\SearchIndexer
+        arguments: [ '@snc_redis.default']
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
     # controllers are imported separately to make sure they're public
     # and have a tag that allows actions to type-hint services
     AppBundle\Controller\:
