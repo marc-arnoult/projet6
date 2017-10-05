@@ -42,15 +42,16 @@
                         response($.map(data, function (value, key) {
                             return {
                                 label: value,
-                                // je veille à récupérer l'id pour faire un appel sur l'article donner.
+                                // je veille à récupérer l'id pour faire un appel sur l'article donné.
                                 id: key
                             }
                         }));
                     }
                 })
             },
+            // Ici nous renvoyons l'utilisateur sur la page de l'article autocomplété.
             select: function (e, ui) {
-                console.log(ui.item.id)
+                window.location = '/article/' + ui.item.id;
             }
         })
     </script>

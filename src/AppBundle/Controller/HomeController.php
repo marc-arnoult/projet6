@@ -26,13 +26,19 @@ class HomeController extends Controller
     public function searchAction(Request $request)
     {
         // Récupération de la valeur passé en paramètre.
-        $titre = ltrim(strtolower($request->query->get('title')));
+        // htmlspecialchar => pour se proteger contre les failles XSS.
+        // strtolower pour tout mettre en minuscule.
+        $titre = htmlspecialchars(strtolower($request->query->get('title')));
         $redis = $this->get('snc_redis.default');
         // Ici se place toute notre logique de recherche.
-        // [ => recherche inclusif du titre.
+        /*
+         * Je scan dans mon set articles la chaine de caractère envoyé par l'utilisateur.
+         * Je regarde si il y a un "match" avec le titre et je récupère le tout.
+         */
         $data = $redis->sscan('articles', 0, ['MATCH' => '*' . $titre . '*']);
         $articles = [];
 
+        // Ici je récupère l'id et le titre dans 2 variables distincte pour ensuite les traiter côté front-end.
         foreach ($data[1] as $article) {
             list($title, $id) = explode(':', $article);
             $articles[$id] = $title;

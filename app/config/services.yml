@@ -22,8 +22,11 @@ services:
         # but if a service is unused, it's removed anyway
         exclude: '../../src/AppBundle/{Entity,Repository,Tests}'
 
+    # Nom de notre listener
     search.indexer.listener:
+        # Notre classe
         class: AppBundle\EventListener\SearchIndexer
+        # On lui dit d'injecter redis dans son constructeur.
         arguments: [ '@snc_redis.default']
         tags:
             - { name: doctrine.event_listener, event: postPersist }

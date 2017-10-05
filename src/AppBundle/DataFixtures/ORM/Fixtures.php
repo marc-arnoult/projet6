@@ -9,22 +9,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Fixtures implements FixtureInterface, ContainerAwareInterface
+class Fixtures implements FixtureInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * Sets the container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
     /**
      * Load data fixtures with the passed EntityManager
      *
@@ -32,15 +18,13 @@ class Fixtures implements FixtureInterface, ContainerAwareInterface
      */
     public function load(ObjectManager $manager)
     {
-        $redis = $this->container->get('snc_redis.default');
-
         // Titres des mes article, important pour notre recherche avec autocomplétion.
         $titles = [
             'tout savoir sur le développement',
             '50 nuances de projet 2',
             'développeur une passion',
             'un projet pas comme les autres',
-            'les projets, toute une histoire',
+            'les soutenances le nerf de la formation',
             'développement web, bon à savoir'
         ];
 
@@ -53,7 +37,7 @@ class Fixtures implements FixtureInterface, ContainerAwareInterface
 
             // Enregistrement des articles en base de données.
             $manager->persist($article);
-            $manager->flush();
         }
+        $manager->flush();
     }
 }
